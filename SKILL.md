@@ -1,5 +1,5 @@
 ---
-name: damask-usage
+name: damask-skill
 description: Prepare, run, parallelize, restart, post-process, and troubleshoot DAMASK simulations across native, MPI/OpenMP, Docker/Podman, Conda, Python/Jupyter, WSL, and MSC Marc environments. Use whenever a user asks about DAMASK installation, runtime or solver selection, material/load/geometry inputs, reusable input examples or templates, configuration fragments, grid or mesh commands, container mounts, HDF5 results, or failed runs.
 ---
 
