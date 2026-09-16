@@ -1,4 +1,4 @@
 interface:
-  display_name: "DAMASK Usage"
+  display_name: "DAMASK Skill"
   short_description: "Retrieve examples and safely prepare DAMASK runs"
-  default_prompt: "Use $damask-usage to retrieve a relevant reference case, prepare a version-appropriate DAMASK command, and keep scientific assumptions explicit."
+  default_prompt: "Use $damask-skill to retrieve a relevant reference case, prepare a version-appropriate DAMASK command, and keep scientific assumptions explicit."
