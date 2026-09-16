@@ -1,4 +1,4 @@
 interface:
   display_name: "DAMASK Skill"
-  short_description: "Retrieve examples and safely prepare DAMASK runs"
-  default_prompt: "Use $damask-skill to retrieve a relevant reference case, prepare a version-appropriate DAMASK command, and keep scientific assumptions explicit."
+  short_description: "Prepare DAMASK runs and Python workflows safely"
+  default_prompt: "Use $damask-skill to retrieve a relevant input or Python reference, adapt it for my environment, and keep compatibility and scientific assumptions explicit."
