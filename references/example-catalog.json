@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "library": {
+    "asset_root": "assets/example-library",
+    "file_count": 134,
+    "tree_digest_algorithm": "sha256(relative_posix_path + NUL + sha256(file_bytes) for sorted files)",
+    "tree_digest": "333217a3e8b3622c659e419896427925db7ebb6b5babbbc6eed55bb8ad6b65ad",
+    "retrieved_at": "2026-09-16",
+    "damask_version": "unknown",
+    "source_page": "https://damask-multiphysics.org/documentation/usage.html"
+  },
+  "source_archives": [
+    {
+      "name": "config.tar.xz",
+      "sha256": "31aa13a4bdec8ca459ff57e945442d96f4dfc22f7dfdb97eb2c6cfecfe18febe"
+    },
+    {
+      "name": "grid.tar.xz",
+      "sha256": "567aa88eb40430c066423349901495c70bff85000c492f406c7ac663f9df9c55"
+    },
+    {
+      "name": "Marc.tar.xz",
+      "sha256": "9ce02f715cd46cc56e532b1703aa15f1f04f258826ea8daefda4daca76887b0f"
+    },
+    {
+      "name": "mesh.tar.xz",
+      "sha256": "b4eaca975b1317898942ee423baa774c8c391f76f30da6330832b5b295289eca"
+    }
+  ],
+  "cases": [
+    {
+      "id": "grid-tension-small",
+      "solver": "grid",
+      "description": "20-grain 16x16x16 regular grid under x-direction tension; preferred quick grid template.",
+      "keywords": ["grid", "small", "tension", "aluminum", "spectral"],
+      "files": [
+        {"role": "geometry", "path": "grid/20grains16x16x16.vti"},
+        {"role": "load", "path": "grid/tensionX.yaml"},
+        {"role": "material", "path": "grid/material.yaml"},
+        {"role": "numerics", "path": "grid/numerics.yaml"},
+        {"role": "seeds", "path": "grid/20grains.seeds"}
+      ]
+    },
+    {
+      "id": "grid-tension-medium",
+      "solver": "grid",
+      "description": "20-grain 32x32x32 regular grid under x-direction tension.",
+      "keywords": ["grid", "medium", "tension", "aluminum", "spectral"],
+      "files": [
+        {"role": "geometry", "path": "grid/20grains32x32x32.vti"},
+        {"role": "load", "path": "grid/tensionX.yaml"},
+        {"role": "material", "path": "grid/material.yaml"},
+        {"role": "numerics", "path": "grid/numerics.yaml"},
+        {"role": "seeds", "path": "grid/20grains.seeds"}
+      ]
+    },
+    {
+      "id": "grid-tension-large",
+      "solver": "grid",
+      "description": "20-grain 64x64x64 regular grid under x-direction tension; higher computational cost.",
+      "keywords": ["grid", "large", "tension", "aluminum", "spectral"],
+      "files": [
+        {"role": "geometry", "path": "grid/20grains64x64x64.vti"},
+        {"role": "load", "path": "grid/tensionX.yaml"},
+        {"role": "material", "path": "grid/material.yaml"},
+        {"role": "numerics", "path": "grid/numerics.yaml"},
+        {"role": "seeds", "path": "grid/20grains.seeds"}
+      ]
+    },
+    {
+      "id": "grid-shear-xy-small",
+      "solver": "grid",
+      "description": "20-grain 16x16x16 regular grid under xy shear.",
+      "keywords": ["grid", "small", "shear", "xy", "aluminum", "spectral"],
+      "files": [
+        {"role": "geometry", "path": "grid/20grains16x16x16.vti"},
+        {"role": "load", "path": "grid/shearXY.yaml"},
+        {"role": "material", "path": "grid/material.yaml"},
+        {"role": "numerics", "path": "grid/numerics.yaml"},
+        {"role": "seeds", "path": "grid/20grains.seeds"}
+      ]
+    },
+    {
+      "id": "grid-shear-zx-small",
+      "solver": "grid",
+      "description": "20-grain 16x16x16 regular grid under zx shear.",
+      "keywords": ["grid", "small", "shear", "zx", "aluminum", "spectral"],
+      "files": [
+        {"role": "geometry", "path": "grid/20grains16x16x16.vti"},
+        {"role": "load", "path": "grid/shearZX.yaml"},
+        {"role": "material", "path": "grid/material.yaml"},
+        {"role": "numerics", "path": "grid/numerics.yaml"},
+        {"role": "seeds", "path": "grid/20grains.seeds"}
+      ]
+    },
+    {
+      "id": "mesh-tension-monocrystal",
+      "solver": "mesh",
+      "description": "Unstructured monocrystal mesh under y-direction tension.",
+      "keywords": ["mesh", "monocrystal", "tension", "y", "fem"],
+      "files": [
+        {"role": "geometry", "path": "mesh/monocrystal.msh"},
+        {"role": "load", "path": "mesh/tensionY_mono.yaml"},
+        {"role": "material", "path": "mesh/material.yaml"}
+      ]
+    },
+    {
+      "id": "mesh-tension-3grain",
+      "solver": "mesh",
+      "description": "Unstructured three-grain cube under z-direction tension.",
+      "keywords": ["mesh", "three-grain", "cube", "tension", "z", "fem"],
+      "files": [
+        {"role": "geometry", "path": "mesh/cube_3grains.msh"},
+        {"role": "load", "path": "mesh/tensionZ_3g.yaml"},
+        {"role": "material", "path": "mesh/material.yaml"}
+      ]
+    },
+    {
+      "id": "mesh-tension-5grain",
+      "solver": "mesh",
+      "description": "Unstructured five-grain disk under z-direction tension.",
+      "keywords": ["mesh", "five-grain", "disk", "tension", "z", "fem"],
+      "files": [
+        {"role": "geometry", "path": "mesh/disk_5grains.msh"},
+        {"role": "load", "path": "mesh/tensionZ_5g.yaml"},
+        {"role": "material", "path": "mesh/material.yaml"}
+      ]
+    },
+    {
+      "id": "marc-r-value-texture",
+      "solver": "marc",
+      "description": "MSC Marc r-value texture input deck and matching material configuration.",
+      "keywords": ["marc", "r-value", "texture", "commercial", "fem"],
+      "files": [
+        {"role": "model", "path": "marc/r-value_texture.dat"},
+        {"role": "material", "path": "marc/material.yaml"}
+      ]
+    }
+  ],
+  "collections": [
+    {
+      "id": "config-fragments",
+      "root": "config",
+      "description": "Composable numerics, homogenization, phase, elastic, plastic, eigenstrain, thermal, chemical, and damage examples. These are reference fragments, not automatically compatible complete material files."
+    }
+  ]
+}

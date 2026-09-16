@@ -1,0 +1,4 @@
+interface:
+  display_name: "DAMASK Usage"
+  short_description: "Retrieve examples and safely prepare DAMASK runs"
+  default_prompt: "Use $damask-usage to retrieve a relevant reference case, prepare a version-appropriate DAMASK command, and keep scientific assumptions explicit."
