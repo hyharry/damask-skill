@@ -41,18 +41,18 @@ conda install -c conda-forge damask
 pip3 install damask
 ```
 
-`pip` installs processing tools only. Official container images include:
+`pip` installs processing tools only. The official container repositories are:
 
-- `damaskmultiphysics/damask-grid:latest`
-- `damaskmultiphysics/damask-mesh:latest`
-- `damaskmultiphysics/python-damask:latest`
-- `damaskmultiphysics/jupyter-damask:latest`
+- `damaskmultiphysics/damask-grid`
+- `damaskmultiphysics/damask-mesh`
+- `damaskmultiphysics/python-damask`
+- `damaskmultiphysics/jupyter-damask`
 
-Example grid container:
+The upstream page may demonstrate mutable `:latest` tags. For reproducibility, first inspect an already-installed version tag or immutable digest and substitute it for `<version-or-digest>`:
 
 ```sh
-docker run --rm -it -v "${PWD}:/wd" -e OMP_NUM_THREADS=4 \
-  damaskmultiphysics/damask-grid:latest \
+docker run --rm --pull=never -v "${PWD}:/wd" -e OMP_NUM_THREADS=4 \
+  damaskmultiphysics/damask-grid:<version-or-digest> \
   --load load.yaml --geom grid.vti --material material.yaml
 ```
 
