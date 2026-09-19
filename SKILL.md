@@ -1,6 +1,6 @@
 ---
 name: damask-skill
-description: Prepare, run, parallelize, restart, preprocess, postprocess, and troubleshoot DAMASK simulations across native, MPI/OpenMP, Docker/Podman, Conda, Python/Jupyter, WSL, and MSC Marc environments. Use whenever a user asks about DAMASK installation, runtime or solver selection, material/load/geometry inputs, reusable input examples or Python utilities, configuration fragments, grid or mesh commands, container mounts, HDF5 results, visualization, derived fields, or failed runs.
+description: "Prepare, run, postprocess, and troubleshoot DAMASK simulations on Linux, Docker/Podman, Conda, WSL, and MSC Marc."
 ---
 
 # Use DAMASK
@@ -39,6 +39,17 @@ The host's system and security policies and the user's explicit request take pre
 9. After execution, verify the exit status, logs, and expected DADF5/HDF5 result. Process launch alone is not success. On failure, preserve the inputs, logs, and restart file.
 10. Preprocess or postprocess with the Python `damask` package only after checking the installed API and dependencies. Begin result workflows with `damask.Result(...)`. Derive or export only quantities relevant to the request. Prefer a staged Python reference when one matches the task; otherwise copy `assets/templates/postprocess_result.py` before adapting it. Never modify bundled source in place, and use a backup or explicit copy before a workflow that adds fields to an HDF5 result.
 
+## Gate bounded autonomous execution
+
+When the user explicitly requests unattended or autonomous setup/execution, keep the scope bounded and run the checklist in [references/autonomous-checklist.md](references/autonomous-checklist.md). Proceed without another confirmation only when every item passes; otherwise stop at a dry run and ask for the missing scientific decision.
+
+- Record the authorized host, working directory, solver/runtime and version, resource limits, exact inputs, expected result, and stop conditions.
+- Copy long scientific arrays and material fragments exactly from a staged reference or a cited installed-version source. Never transcribe or count them manually; preserve provenance and placeholder values.
+- Describe geometry and boundary conditions from the actual inputs. `Nx×Ny×1` is a quasi-2D 3-D grid, not automatically true 2-D or plane strain. Free lateral deformation paired with zero lateral stress is uniaxial-stress loading, not plane strain.
+- After a solver failure, do not change constitutive parameters, boundary conditions, or numerics autonomously. A schema-only correction may proceed only when it is reproduced exactly from an inspected compatible source and recorded in the run notes.
+- Ensure wrappers and pipelines propagate the solver's real nonzero exit status. Logging must not turn failure into shell status zero.
+- Retain the final command, image tag or digest, input hashes, solver log, result path, and postprocessing command. Report the stress/strain measure and averaging method; derive spatial axes from geometry metadata and validate derived formulas against the installed DAMASK API or a checked identity.
+
 ## Retrieve and stage examples
 
 ```sh
@@ -64,7 +75,6 @@ python3 scripts/python_reference.py stage post-determine-yield-point --destinati
 ```
 
 The Python catalog contains the 20 supplied `.py` files and excludes notebooks and data files. The sources declare DAMASK 3.1.0; many contain hard-coded sample paths, notebook hooks, optional plotting dependencies, or result-mutating `add_*` calls. `post-export-regular-grid` also needs a quoting adaptation on Python 3.10. Read [references/python-utilities.md](references/python-utilities.md) and the selected script's runtime notes before composing code. Stage one script outside the skill, retain `.damask-python-reference.json`, replace paths and interactive hooks explicitly, compile-check the adapted copy, and test it on disposable or backed-up data. Never execute a bundled reference directly.
-
 
 ## Use the launcher
 
