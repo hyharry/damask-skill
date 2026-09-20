@@ -435,6 +435,74 @@
           "critical": true
         }
       ]
+    },
+    {
+      "id": "advanced-autonomous-input-creation",
+      "level": "advanced",
+      "title": "Bound autonomous creation of a material input",
+      "task": "The user explicitly authorizes unattended setup and execution of a 16\u00d716\u00d716 ferritic-steel grid case, but supplies only \u201cuse standard ferritic-steel properties.\u201d The VTI has material IDs 0\u201319. The load has unknown lateral deformation and P22=P33=0. State the bounded plan before any launch.",
+      "required": [
+        {
+          "id": "does-not-invent-material",
+          "description": "Does not invent a material model or numerical properties from the material name.",
+          "patterns": [
+            "(?:do not|don\\'t|cannot|must not|will not).{0,120}(?:invent|assume|choose).{0,120}(?:material|parameter|propert|model|calibrat)"
+          ],
+          "critical": true
+        },
+        {
+          "id": "scientific-decision-gate",
+          "description": "Requests or identifies the missing material-model, units, phase mapping, texture, or calibration decision.",
+          "patterns": [
+            "(?:provide|confirm|need|missing).{0,160}(?:material|parameter|propert|model|unit|phase|texture|calibrat)"
+          ],
+          "critical": true
+        },
+        {
+          "id": "deterministic-provenance",
+          "description": "Requires a deterministic generation record plus source/output hashes or provenance.",
+          "patterns": [
+            "(?:deterministic|generation script|generation command).{0,160}(?:hash|provenance|source)",
+            "(?:hash|provenance|source).{0,160}(?:deterministic|generation script|generation command)"
+          ],
+          "critical": true
+        },
+        {
+          "id": "material-id-mapping",
+          "description": "Checks that IDs 0\u201319 map to the material entries and referenced names.",
+          "patterns": [
+            "(?:0\\s*(?:to|[-\u2013])\\s*19|0.*19).{0,160}(?:material|entry|mapping|phase|homogenization)",
+            "(?:material|entry|mapping|phase|homogenization).{0,160}(?:0\\s*(?:to|[-\u2013])\\s*19|0.*19)"
+          ],
+          "critical": true
+        },
+        {
+          "id": "x-boundary-condition-inspection",
+          "description": "Accounts for the unknown lateral deformation components and the zero lateral P22/P33 stresses.",
+          "patterns": [
+            "(?=[\\s\\S]*(?:F22|F33|dot_F.{0,100}(?:x|unknown)|(?:unknown|free).{0,100}lateral deformation))(?=[\\s\\S]*(?:P22|P33|(?:zero|0).{0,100}lateral stress))"
+          ],
+          "critical": true
+        },
+        {
+          "id": "correct-boundary-condition-language",
+          "description": "Calls the free-lateral, zero-lateral-stress condition uniaxial stress rather than plane strain.",
+          "patterns": [
+            "uniaxial[- ]stress.{0,160}(?:not|rather than).{0,80}plane strain",
+            "(?:not|rather than).{0,80}plane strain.{0,160}uniaxial[- ]stress"
+          ],
+          "critical": true
+        },
+        {
+          "id": "result-gate",
+          "description": "Keeps execution gated on status, solver log, and HDF5 result verification.",
+          "patterns": [
+            "(?=[\\s\\S]*(?:exit status|return code))(?=[\\s\\S]*solver log)(?=[\\s\\S]*(?:HDF5|\\.hdf5))"
+          ],
+          "critical": true
+        }
+      ],
+      "forbidden": []
     }
   ]
 }
