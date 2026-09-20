@@ -46,7 +46,7 @@ It supports Codex, Claude Code, Pi, OpenClaw, Hermes, and an explicit generic de
 
 ## Verified DAMASK 3.1.0 Docker example
 
-A bounded live run on `mapc4_wsl2` used the already-local, inspected image `damaskmultiphysics/damask-grid:3.1.0` (image ID beginning `sha256:f9b9d085e0c1`) and deliberately disabled pulls. From the prepared case directory, its solver command was:
+A bounded live run on `mapc4_wsl2` used the already-local, inspected image `damaskmultiphysics/damask-grid:3.1.0` (image ID beginning `sha256:f9b9d085e0c1`) and deliberately disabled pulls. From the prepared case directory, the core Docker invocation was (the live validation wrapped it in `timeout 600`):
 
 ```sh
 IMAGE=damaskmultiphysics/damask-grid:3.1.0
