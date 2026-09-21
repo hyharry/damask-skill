@@ -1,6 +1,6 @@
 # Bounded autonomous DAMASK checklist
 
-Use only after the user explicitly authorizes unattended setup or execution. A failed or unknown item means stop at a dry run and ask for the missing scientific decision.
+Use only after the user explicitly authorizes unattended setup or execution. A failed or unknown applicable item blocks launch. Inspect missing facts when possible; ask only for decisions or authorization that cannot be recovered from the task and files. Prepare a dry run if its required files/options are known. Existing execution authorization remains valid within its stated scope.
 
 ## Before launch
 
@@ -20,7 +20,7 @@ Use only after the user explicitly authorizes unattended setup or execution. A f
 - Print and retain the exact command before execution.
 - Use wrappers that return the solver's real status; with shell pipelines, enable `pipefail` and preserve the solver status.
 - Log stdout/stderr without masking failure.
-- On failure, preserve inputs, log, status/restart files, and partial results. Retry only a smaller equivalent case or a schema correction reproduced exactly from an inspected compatible source; record its diff and hashes and pass the version-specific dry-run or validation gate. Ask before changing physics or numerics.
+- On failure, preserve inputs, log, status/restart files, and partial results. Retry only within the authorized scope and stop conditions, using unchanged scientific inputs or a schema correction reproduced exactly from an inspected compatible source; record any correction's diff and hashes and pass the version-specific validation gate. The launcher's path/option dry run alone is insufficient. Ask before changing geometry, physics, or numerics.
 
 ## Result and report gate
 

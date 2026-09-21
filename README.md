@@ -13,16 +13,17 @@ Run these commands from this repository. Bundled examples are read-only referenc
 python3 scripts/example_library.py describe grid-tension-small
 
 # 2. Stage an editable case (does not run DAMASK)
-python3 scripts/example_library.py stage grid-tension-small --destination ./case
-cd case
+SKILL_DIR="$PWD"
+python3 "$SKILL_DIR/scripts/example_library.py" stage grid-tension-small --destination ../damask-case
+cd ../damask-case
 
-# 3. Dry run: validate inputs and print the command (no solver launch)
-python3 ../scripts/run_solver.py \
+# 3. Dry run: check paths/options and print the command (no solver launch)
+python3 "$SKILL_DIR/scripts/run_solver.py" \
   --solver grid --geom 20grains16x16x16.vti \
   --load tensionX.yaml --material material.yaml --numerics numerics.yaml
 
 # 4. Execute only after the user explicitly authorizes it
-python3 ../scripts/run_solver.py \
+python3 "$SKILL_DIR/scripts/run_solver.py" \
   --solver grid --geom 20grains16x16x16.vti \
   --load tensionX.yaml --material material.yaml --numerics numerics.yaml \
   --execute
@@ -30,7 +31,7 @@ python3 ../scripts/run_solver.py \
 # 5. Verify: exit status, solver log, and the expected HDF5 result
 ```
 
-Before step 4, inspect the runtime's `--help`, record the working directory/resources/inputs, and confirm the expected result name. See [SKILL.md](SKILL.md) and the [autonomous checklist](references/autonomous-checklist.md) for the full gate.
+These shell commands use Bash/POSIX syntax and require a new, writable sibling destination; choose another directory outside the skill if needed. Before step 4, validate the scientific inputs and installed-version compatibility, inspect the runtime's `--help`, record the working directory/resources/inputs, and confirm the expected result name. The launcher's dry run checks paths/options only. See [SKILL.md](SKILL.md) and the [autonomous checklist](references/autonomous-checklist.md) for the full gate.
 
 ## Install
 

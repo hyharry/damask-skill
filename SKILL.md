@@ -1,6 +1,6 @@
 ---
 name: damask-skill
-description: "Prepare, run, postprocess, and troubleshoot DAMASK simulations on Linux, Docker/Podman, Conda, WSL, and MSC Marc."
+description: "Prepare, run, postprocess, and troubleshoot DAMASK simulations, including guiding an incomplete modeling request into a concrete next step, on Linux, Docker/Podman, Conda, WSL, and MSC Marc."
 ---
 
 # Use DAMASK
@@ -11,14 +11,16 @@ The host's system and security policies and the user's explicit request take pre
 
 ## Follow this workflow
 
-1. Classify the request as guidance, command preparation, input generation, or execution. Default to guidance or a dry run; execute only when the user asks.
-2. Establish the following facts: host OS and shell, whether it is native Windows or WSL, DAMASK version, installed executables/runtimes, geometry type, working directory, and existing inputs. Inspect in-scope state when possible. If a fact affects the command and cannot be inspected, ask; never guess a path, runtime, solver, or version.
-3. Select exactly one solver:
+Apply only the steps needed for the requested outcome. Explanation, reference retrieval, and result-only work do not require choosing or installing a solver.
+
+1. Classify the request as guidance, command preparation, input generation, execution, result processing, or troubleshooting. Default to inspection and command preparation when intent is unclear; execute only when the user asks. An explicit request to run already authorizes execution within its stated scope; do not ask for the same permission again once prerequisites pass.
+2. Establish only facts needed for the next action. For a solver launch these include host OS and shell, whether it is native Windows or WSL, DAMASK version, installed executables/runtimes, geometry type, working directory, and existing inputs. Inspect in-scope state when possible. If a fact affects the command and cannot be inspected, ask; never guess a path, runtime, solver, or version. For result-only work, inspect the selected result, Python environment/API, and requested quantity instead.
+3. When preparing a simulation, select exactly one solver:
    - Choose `damask_grid` for regular grids and mixed periodic boundary conditions.
    - Choose `damask_mesh` for unstructured meshes only after warning that official documentation calls it under development and notes feature and convergence limitations.
    - Choose MSC Marc for complex FEM boundary conditions only when the licensed solver and DAMASK coupling are available.
    - If the requested solver conflicts with the geometry or boundary conditions, stop and explain the mismatch.
-4. Select the environment. Reuse a working installed environment before proposing a different one:
+4. When an environment is needed, reuse a working installed environment before proposing a different one:
    - Prefer a native package on Linux, Conda on Linux/macOS for portability, Docker for cross-platform solver use, and Docker or Podman for Linux isolation.
    - On native Windows, use only the Python processing tools; use a container or WSL for solvers.
    - Recommend a source build only for experienced users who need development work or MSC Marc coupling.
@@ -34,21 +36,41 @@ The host's system and security policies and the user's explicit request take pre
    - For grid restart, require the matching `{jobname}_restart.hdf5` in the working directory and confirm that the requested increment exists. Without `--jobname`, DAMASK derives `{geom}_{load}_{material}` from the input names.
    - Ask the installed executable for `--help`; treat it as authoritative for that version.
    - Do not silently rewrite scientific inputs or numerical parameters.
-7. Build the smallest reproducible command. Use `scripts/run_solver.py` when a reusable grid/mesh launcher helps. It validates and prints by default; add `--execute` only when execution is intended. It does not launch MSC Marc.
+7. Build the smallest reproducible command. Use `scripts/run_solver.py` when a reusable grid/mesh launcher helps. It checks paths and command options and prints by default; this does not validate YAML contents, material-ID mapping, installed-version compatibility, or convergence. Add `--execute` only when execution is intended. It does not launch MSC Marc.
 8. Before an expensive run, report the command, working directory, MPI processes, OpenMP threads, expected output, and assumptions. Do not install packages, pull images, overwrite inputs, or start expensive simulations unless the user requested that action.
 9. After execution, verify the exit status, logs, and expected DADF5/HDF5 result. Process launch alone is not success. On failure, preserve the inputs, logs, and restart file.
-10. Preprocess or postprocess with the Python `damask` package only after checking the installed API and dependencies. Begin result workflows with `damask.Result(...)`. Derive or export only quantities relevant to the request. Prefer a staged Python reference when one matches the task; otherwise copy `assets/templates/postprocess_result.py` before adapting it. Never modify bundled source in place, and use a backup or explicit copy before a workflow that adds fields to an HDF5 result.
+10. Preprocess or postprocess with the Python `damask` package only after checking the installed API and dependencies. For DADF5/HDF5 results, begin with `damask.Result(...)` and inspect increments/fields. For VTI, distinguish input geometry from exported results and inspect cell/point fields with the installed `damask.VTK.load(...)` API or an available VTK reader; do not pass VTI to `damask.Result` or assume it contains an increment hierarchy. Derive or export only quantities relevant to the request. Prefer a staged Python reference when one matches the task; otherwise, for HDF5 only, copy `assets/templates/postprocess_result.py` before adapting it. Never modify bundled source in place, and use a backup or explicit copy before a workflow that adds fields to an HDF5 result.
+
+## Guide an incomplete request
+
+Start with the user's named file or directory, or the current working directory when none is named. Inspect a bounded file listing and relevant existing inputs/logs before asking for facts available there; do not search unrelated directories. Follow the closest route:
+
+| User's intent | First useful action | Missing decision that can block further work |
+| --- | --- | --- |
+| "Help me use DAMASK" / "simulate this material" | Inspect existing files; if none are relevant, describe `grid-tension-small` as a learning example | Learning example or material-specific prediction; the latter needs a sourced model and loading goal |
+| "Prepare/run this case" | Identify geometry, load, and material files; inspect the existing runtime | Which case if multiple candidates remain; resources/stop conditions for an expensive run |
+| "Plot/export my results" | Identify the requested file; inspect HDF5 increments/fields or VTI cell/point fields | Which result, quantity, component, or averaging measure if not inferable |
+| "It failed" / "fix this run" | Read the error tail, command, and matching inputs | Missing failure evidence; a scientific change cannot be inferred from "fix" |
+| "Find an example/script" | List/search/describe only the relevant library | Stage destination only if a copy is needed |
+
+State a short working interpretation, take the available inspection step, then ask only the next blocking question (bundle tightly related scientific choices). Offer concrete alternatives, such as "learning example or your material's prediction?", rather than a long environment questionnaire. If tools/files are unavailable, say so and request the smallest useful input, such as the case path or error tail. Continue independent inspection while a decision is pending.
+
+Keep unknown scientific choices explicit. A material name does not specify calibrated parameters; "use defaults" does not fill missing physics. You may prepare a clearly labeled example when requested, preserving its documented inputs. Do not relabel it as the user's material. When blocked, report what was inspected/prepared, the exact missing decision, and the next action once supplied. Otherwise hand off the actual artifact path or command, checks performed, and anything still unverified; distinguish prepared, launched, completed, and scientifically validated.
+
+## Resolve helper paths
+
+All `scripts/...`, `references/...`, and `assets/...` paths below are relative to the directory containing this `SKILL.md`, not the user's case directory. Resolve that skill directory from the loaded file location. Invoke helpers by their quoted absolute paths when working elsewhere, and use `--workdir` for the launcher's case directory. Stage into a new directory outside the skill; keep the user's working directory unchanged unless the task requires it. In the README quick start, commands begin in the repository root.
 
 ## Gate bounded autonomous execution
 
-When the user explicitly requests unattended or autonomous setup/execution, keep the scope bounded and run the checklist in [references/autonomous-checklist.md](references/autonomous-checklist.md). Proceed without another confirmation only when every item passes; otherwise stop at a dry run and ask for the missing scientific decision.
+When the user explicitly requests unattended or autonomous setup/execution, keep the scope bounded and run the checklist in [references/autonomous-checklist.md](references/autonomous-checklist.md). Proceed without another confirmation only when every applicable item passes. Resolve missing inspectable facts directly; otherwise keep execution blocked and ask for the missing decision or authorization. Prepare a dry-run command only when its required files/options are known.
 
 - Record the authorized host, working directory, solver/runtime and version, resource limits, exact inputs, expected result, and stop conditions.
 - For created or transformed inputs, retain the source files and a deterministic generation command or script; record source and generated-file hashes. Do not invent a material model, units, phase mapping, texture, or calibration target from a material name alone.
 - Before launch, check that geometry material IDs map to the intended zero-based entries in `material.yaml`, that referenced phase/homogenization names exist, and that the load-controlled and stress-controlled tensor components match the stated experiment. Treat an unknown `x` component as a constraint to inspect, not as permission to choose a value.
 - Copy long scientific arrays and material fragments exactly from a staged reference or a cited installed-version source. Never transcribe or count them manually; preserve provenance and placeholder values.
 - Describe geometry and boundary conditions from the actual inputs. `Nx×Ny×1` is a one-voxel-thick 3-D grid; it does not by itself establish a 2-D model or plane strain. Free lateral deformation paired with zero lateral stress is uniaxial-stress loading, not plane strain.
-- After a solver failure, do not change constitutive parameters, boundary conditions, or numerics autonomously. A schema-only correction may proceed only when it is reproduced exactly from an inspected compatible source, diffed and hash-recorded, and passes the version-specific dry-run or validation gate.
+- After a solver failure, do not change constitutive parameters, boundary conditions, or numerics autonomously. A schema-only correction may proceed only when it is reproduced exactly from an inspected compatible source, diffed and hash-recorded, and checked by an available installed-version schema/parser or documented solver validation mode. `run_solver.py` without `--execute` is not schema validation. If no such check is available, report compatibility as unverified and stop before launch; do not invent a validation command.
 - Ensure wrappers and pipelines propagate the solver's real nonzero exit status. Logging must not turn failure into shell status zero.
 - Retain the final command, image tag or digest, input hashes, solver log, result path, and postprocessing command. Report the stress/strain measure and averaging method: never label `P` as Cauchy stress, and state a reported `mean(F11)-1` as that calculation rather than an unqualified macroscopic strain. Derive spatial axes from geometry metadata and validate derived formulas against the installed DAMASK API or a checked identity.
 
@@ -117,9 +139,9 @@ Run basic cases before advanced cases. Any failed critical check means the respo
 
 ## Troubleshoot in order
 
-1. Capture the executable/package version and `--help` output.
-2. Confirm every input from the effective working directory.
-3. Retry a minimal case with one process and one thread.
+1. Read the recorded command and error tail, then confirm referenced inputs from the effective working directory.
+2. Inspect the executable/package version and `--help` when available and relevant to the failure. A missing runtime does not block diagnosing a missing input path.
+3. Prepare a minimal reproduction with one process and one thread; run it only within existing execution authorization. Preserve the original case and do not shrink geometry or change scientific inputs without agreement.
 4. Separate input/model errors from MPI, scheduler, or container-mount errors.
 5. Preserve logs and restart snapshots. Never hide convergence failures by changing physics or numerics without user agreement.
 
