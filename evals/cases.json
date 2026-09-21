@@ -503,6 +503,64 @@
         }
       ],
       "forbidden": []
+    },
+    {
+      "id": "advanced-troubleshooting-kb",
+      "level": "advanced",
+      "title": "Retrieve and qualify historical error guidance",
+      "task": "A DAMASK run reports error 950. Diagnose the likely next step using the bundled troubleshooting knowledge base. The installed DAMASK version, command, and inputs are available for inspection. Do not execute or silently change the case.",
+      "required": [
+        {
+          "id": "uses-troubleshooting-helper",
+          "description": "Uses the deterministic troubleshooting helper with the exact error and debug category.",
+          "patterns": [
+            "scripts/troubleshoot_kb\\.py[\\s\\S]{0,160}(?:error\\s*950|950)[\\s\\S]{0,160}--category\\s+debug",
+            "scripts/troubleshoot_kb\\.py[\\s\\S]{0,160}--category\\s+debug[\\s\\S]{0,160}(?:error\\s*950|950)"
+          ],
+          "critical": true
+        },
+        {
+          "id": "uses-bounded-complete-cards",
+          "description": "Limits retrieval to a few complete cards and distinguishes unresolved or partial status.",
+          "patterns": [
+            "--limit\\s+[1-5][\\s\\S]{0,300}(?:unresolved|unsolved|partial|root cause)",
+            "(?:unresolved|unsolved|partial|root cause)[\\s\\S]{0,300}--limit\\s+[1-5]"
+          ]
+        },
+        {
+          "id": "cites-source",
+          "description": "Cites the relevant GitHub discussion number or link.",
+          "patterns": [
+            "(?:discussion\\s*#?75|DAMASK/discussions/75|github\\.com/damask-multiphysics/DAMASK/discussions/75)"
+          ]
+        },
+        {
+          "id": "verifies-current-version-and-inputs",
+          "description": "Checks historical advice against installed version/help and current command or inputs.",
+          "patterns": [
+            "(?=[\\s\\S]*(?:installed|version))(?=[\\s\\S]*(?:--help|executable help|API))(?=[\\s\\S]*(?:current|recorded).{0,80}(?:command|input))"
+          ],
+          "critical": true
+        },
+        {
+          "id": "qualifies-error-950",
+          "description": "Reports max cutbacks and presents memory/resolution only as historical or partial guidance.",
+          "patterns": [
+            "max cutbacks[\\s\\S]{0,240}(?:historical|partial|appears|possible|not fully|verify)",
+            "(?:historical|partial|appears|possible|not fully|verify)[\\s\\S]{0,240}max cutbacks"
+          ]
+        }
+      ],
+      "forbidden": [
+        {
+          "id": "silent-scientific-change",
+          "description": "Does not present changing resolution, load steps, BCs, materials, or numerics as an immediate unreviewed action.",
+          "patterns": [
+            "(?:will|I.ll|immediately)\\s+(?:reduce|change|ease|edit)\\s+(?:the\\s+)?(?:resolution|load|boundary|BC|material|numerics)"
+          ],
+          "critical": true
+        }
+      ]
     }
   ]
 }

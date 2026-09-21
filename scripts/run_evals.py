@@ -400,6 +400,7 @@ def validate_skill() -> dict[str, Any]:
         for name in (
             "example_library.py",
             "python_reference.py",
+            "troubleshoot_kb.py",
             "run_solver.py",
             "install_skill.py",
             "run_evals.py",
@@ -417,6 +418,7 @@ def validate_skill() -> dict[str, Any]:
     for script, arguments in (
         ("example_library.py", ["verify"]),
         ("python_reference.py", ["verify"]),
+        ("troubleshoot_kb.py", ["--verify"]),
         ("install_skill.py", ["--list-targets", "--json"]),
     ):
         path = SKILL_ROOT / "scripts" / script
