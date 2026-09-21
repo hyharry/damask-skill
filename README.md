@@ -70,3 +70,7 @@ python3 scripts/install_skill.py --list-targets
 python3 scripts/install_skill.py --agent TARGET --scope user
 python3 scripts/install_skill.py --agent TARGET --scope user --apply
 ```
+
+## License
+
+[MIT](LICENSE) © 2026 Yi Hu.

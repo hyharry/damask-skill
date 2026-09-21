@@ -34,8 +34,7 @@ complete cards with their source and upstream status. Inspect only the top few c
 
 Each card is **Problem** → **Fix / steps**. Entries not solved upstream are tagged *(unanswered)* or
 *(unsolved)*. Cite the `#NNN` GitHub link and distinguish those entries, and partial mitigations, from a
-reported solution.
-4. Follow the `#NNN` link to the full thread when more context is needed.
+reported solution. Follow the link to the full thread when more context is needed.
 
 ## Provenance & caveats
 
